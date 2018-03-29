@@ -110,7 +110,7 @@ parameters = {
         topQuarkPt1 = 'getTopQuarkInitialPts().at(0)',
         topQuarkPt2 = 'getTopQuarkInitialPts().at(1)',
         #buildGenTaus = 'buildGenTaus.size()',
-#        numGenJets = 'evt.numGenJets()',
+        numGenJets = 'evt.numGenJets()',
         genMass = 'evt.getGenMass()',
 
 	#### Uncomment to have LHE weights for study on theoretical uncertainties
@@ -226,6 +226,14 @@ parameters = {
         #lheweight109='evt.lheweights[109]',
         #lheweight110='evt.lheweights[110]',
 
+        #Mengyao add
+        #dimuonVeto = 'vetoSecondMuon(0.15,"pt > 15 & abs(eta) < 2.4 & ( ( pfIsolationR04().sumChargedHadronPt + max( pfIsolationR04().sumNeutralHadronEt + pfIsolationR04().sumPhotonEt - 0.5 * pfIsolationR04().sumPUPt, 0.0)) / pt() ) < 0.3 & isGlobalMuon > 0 & isTrackerMuon > 0 & isPFMuon > 0 & abs( userFloat(\'ipDXY\') ) < 0.045 & abs( userFloat(\'dz\') ) < 0.2").size()',
+        #jetVeto20ZTT = 'vetoJets(0.5, "pt > 20 & abs(eta) < 4.7 & userFloat(\'idLoose\') > 0.5").size()',
+        #jetVeto20ZTT_JESUp = 'vetoJets(0.5, "userCand(\'jes+\').pt > 20 & abs(eta) < 4.7 & userFloat(\'idLoose\') > 0.5").size()',
+        #jetVeto20ZTT_JESDown = 'vetoJets(0.5, "userCand(\'jes-\').pt > 20 & abs(eta) < 4.7 & userFloat(\'idLoose\') > 0.5").size()',
+        #jetVeto20ZTT_JERUp = 'vetoJets(0.5, "userCand(\'jres+\').pt > 20 & abs(eta) < 4.7 & userFloat(\'idLoose\') > 0.5").size()',
+        #jetVeto20ZTT_JERDown = 'vetoJets(0.5, "userCand(\'jres-\').pt > 20 & abs(eta) < 4.7 & userFloat(\'idLoose\') > 0.5").size()',
+   
         # Leading and sublead jets
         j1pt = 'jetVariables("pt > 20 & abs(eta) < 4.7 & userFloat(\'idLoose\') > 0.5", 0.5).at(0)',
         j1eta = 'jetVariables("pt > 20 & abs(eta) < 4.7 & userFloat(\'idLoose\') > 0.5", 0.5).at(1)',
