@@ -94,7 +94,7 @@ process.options = cms.untracked.PSet(
 import FinalStateAnalysis.Utilities.TauVarParsing as TauVarParsing
 options = TauVarParsing.TauVarParsing(
     skipEvents=0,  # Start at an event offset (for debugging)
-    reportEvery=100,
+    reportEvery=1,
     channels='mt,et',
     rerunMCMatch=False,
     eventView=0,  # Switch between final state view (0) and event view (1)
@@ -172,7 +172,7 @@ options.register(
 
 options.register(
     'skipMET',
-    1,
+    0,
     TauVarParsing.TauVarParsing.multiplicity.singleton,
     TauVarParsing.TauVarParsing.varType.int,
     "Skip MET corrections and systematics (good way to reduce memory "
@@ -275,7 +275,6 @@ envvar = 'mcgt' if options.isMC else 'datagt'
 
 # All data falls under unified GT (6 Feb 2017) ReReco BCDEFG, Prompt H
 GT = {'mcgt': '80X_mcRun2_asymptotic_2016_TrancheIV_v8', 'datagt': '80X_dataRun2_2016SeptRepro_v7'}
-
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, GT[envvar], '')
 
@@ -304,7 +303,7 @@ from FinalStateAnalysis.PatTools.patFinalStateProducers \
 fs_daughter_inputs = {
     'electrons': 'slimmedElectrons',
     'muons': 'slimmedMuons',
-    'taus': 'slimmedTaus',
+    'taus': 'slimmedTausMuonCleaned',
     'photons': 'slimmedPhotons',
     'jets': 'slimmedJets',
     'pfmet': 'slimmedMETs',         # slimmedMETs, slimmedMETsNoHF (miniaodv2), slimmmedMETsPuppi (not correct in miniaodv1)
@@ -350,31 +349,32 @@ process.pileupJetIdUpdated = process.pileupJetId.clone(
 ### JEC ##########
 ##################
 
+
+
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 isData = not options.isMC
-process.load ("CondCore.CondDB.CondDB_cfi")
-#from CondCore.CondDB.CondDB_cfi import *
+#process.load ("CondCore.CondDB.CondDB_cfi")
+##from CondCore.CondDB.CondDB_cfi import *
 
 
-# Defaults to running correctly for Condor, you can
-# pass flag to run locally just fine here with runningLocal=1
-sqlitePath = '/{0}/src/FinalStateAnalysis/NtupleTools/data/{1}.db'.format(cmsswversion,'Summer16_23Sep2016V4_MC' if options.isMC else 'Summer16_23Sep2016AllV4_DATA')
-if options.runningLocal :
-    sqlitePath = '../data/{0}.db'.format('Summer16_23Sep2016V4_MC' if options.isMC else 'Summer16_23Sep2016AllV4_DATA' )
+## Defaults to running correctly for Condor, you can
+## pass flag to run locally just fine here with runningLocal=1
+#sqlitePath = '/{0}/src/FinalStateAnalysis/NtupleTools/data/{1}.db'.format(cmsswversion,'Summer16_23Sep2016V4_MC' if options.isMC else 'Summer16_23Sep2016AllV4_DATA')
+#if options.runningLocal :
+#    sqlitePath = '../data/{0}.db'.format('Summer16_23Sep2016V4_MC' if options.isMC else 'Summer16_23Sep2016AllV4_DATA' )
 
 
-process.jec = cms.ESSource("PoolDBESSource",
-         DBParameters = cms.PSet(messageLevel = cms.untracked.int32(0)),
-         timetype = cms.string('runnumber'),
-         toGet = cms.VPSet(cms.PSet(record = cms.string('JetCorrectionsRecord'),
-                                    tag    = cms.string('JetCorrectorParametersCollection_{0}_AK4PFchs'.format('Summer16_23Sep2016V4_MC' if options.isMC else 'Summer16_23Sep2016AllV4_DATA')),
-                                    label  = cms.untracked.string('AK4PFchs')
-                                    )
-                 ),
-         connect = cms.string('sqlite:'+sqlitePath)
-    )
-process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
-
+#process.jec = cms.ESSource("PoolDBESSource",
+#         DBParameters = cms.PSet(messageLevel = cms.untracked.int32(0)),
+#         timetype = cms.string('runnumber'),
+#         toGet = cms.VPSet(cms.PSet(record = cms.string('JetCorrectionsRecord'),
+#                                    tag    = cms.string('JetCorrectorParametersCollection_{0}_AK4PFchs'.format('Summer16_23Sep2016V4_MC' if options.isMC else 'Summer16_23Sep2016AllV4_DATA')),
+#                                    label  = cms.untracked.string('AK4PFchs')
+#                                    )
+#                 ),
+#         connect = cms.string('sqlite:'+sqlitePath)
+#    )
+#process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 ## https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrPatJets
 from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import updatedPatJetCorrFactors
 process.patJetCorrFactorsReapplyJEC = updatedPatJetCorrFactors.clone(
@@ -675,7 +675,7 @@ if options.runMVAMET:
     recorrectJets(process, isData)
     
     runMVAMET( process, jetCollectionPF = mvametJetCollection )
-    process.MVAMET.srcLeptons  = cms.VInputTag("slimmedMuons", "slimmedElectrons", "slimmedTaus")
+    process.MVAMET.srcLeptons  = cms.VInputTag("slimmedMuons", "slimmedElectrons", "slimmedTausMuonCleaned")
     process.MVAMET.requireOS = cms.bool(False)
     process.MVAMETSequence = cms.Path(process.MVAMET)
 

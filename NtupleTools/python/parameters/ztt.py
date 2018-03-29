@@ -11,8 +11,8 @@ parameters = {
     'ptCuts' : {
         'm': '10',
         'e': '10',
-        't': '19',
-        'j': '18'
+        't': '10',
+        'j': '10'
     },
     'etaCuts' : {
         'm': '2.4',
@@ -47,9 +47,9 @@ parameters = {
     'finalSelection' : {
         'e': 'abs(superCluster().eta) < 3.0 && pt > 7',
         'm': 'pt > 8 && (isGlobalMuon | isTrackerMuon)',
-        't': 'abs(eta) < 2.5 && pt > 17',
+        't': 'abs(eta) < 2.5 && pt > 10',
         'g': 'abs(superCluster().eta()) < 3.0 && pt > 10',
-        'j': 'pt>18 && abs(eta) < 4.7 && userFloat("idLoose") > 0.5'
+        'j': 'pt>10 && abs(eta) < 4.7 && userFloat("idLoose") > 0.5'
     },
 
 
@@ -110,7 +110,7 @@ parameters = {
         topQuarkPt1 = 'getTopQuarkInitialPts().at(0)',
         topQuarkPt2 = 'getTopQuarkInitialPts().at(1)',
         #buildGenTaus = 'buildGenTaus.size()',
-        numGenJets = 'evt.numGenJets()',
+#        numGenJets = 'evt.numGenJets()',
         genMass = 'evt.getGenMass()',
 
 	#### Uncomment to have LHE weights for study on theoretical uncertainties
