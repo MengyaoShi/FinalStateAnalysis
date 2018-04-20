@@ -125,7 +125,7 @@ options = TauVarParsing.TauVarParsing(
     runWZ=0,
     isLFV=0,
     runMetUncertainties=0,
-    metShift=0,
+    metShift=1,
     runFSRFilter=0, # 1 = filter for ZG, -1 inverts filter for DY
     eventsToSkip='',
 )
@@ -211,6 +211,8 @@ process.source = cms.Source(
 )
 
 from FinalStateAnalysis.NtupleTools.parameters.default import parameters
+from FinalStateAnalysis.NtupleTools.parameters.ztt import parameters as zttParams
+parameters.update(zttParams)
 if options.paramFile:
     # add custom parameters
     if os.path.isfile(options.paramFile):

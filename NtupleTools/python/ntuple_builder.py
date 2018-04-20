@@ -186,7 +186,7 @@ def make_ntuple(*legs, **kwargs):
 
     '''
     postfix = kwargs.pop('postfix','')
-    isShiftedMet = kwargs.pop('isShiftedMet',False)
+    isShiftedMet = kwargs.pop('isShiftedMet',True)
     # Make sure we only use allowed leg types
     allowed = set(['m', 'e', 't', 'g','j'])
     assert(all(x in allowed for x in legs))
