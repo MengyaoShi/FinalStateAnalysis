@@ -5,7 +5,7 @@ import os
 import re
 def getFileList(inDir, inputName):
     tempfile = open('tmpFile.txt','w')
-    cmd_all='find ' + inDir + ' -maxdepth 2 -mindepth 2 -name *rawSkim' 
+    cmd_all='find ' + inDir + ' -maxdepth 2 -mindepth 2 -name *rawSkimTau' 
     print cmd_all
     process_all=subprocess.Popen(cmd_all.split(), shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     tempfile.write(process_all.communicate()[0])

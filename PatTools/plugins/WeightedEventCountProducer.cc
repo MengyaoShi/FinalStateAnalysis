@@ -23,7 +23,7 @@
 class WeightedEventCountProducer : public edm::one::EDProducer<edm::one::WatchLuminosityBlocks,
                                                        edm::EndLuminosityBlockProducer> {
 public:
-  explicit WeightedEventCountProducer(const edm::ParameterSet&, edm::ConsumesCollector&&);
+  explicit WeightedEventCountProducer(const edm::ParameterSet&);
   ~WeightedEventCountProducer();
 
 private:
@@ -47,11 +47,11 @@ using namespace std;
 
 
 
-WeightedEventCountProducer::WeightedEventCountProducer(const edm::ParameterSet& iConfig, edm::ConsumesCollector&& cc){
+WeightedEventCountProducer::WeightedEventCountProducer(const edm::ParameterSet& iConfig){
   produces<edm::MergeableCounter, edm::InLumi>();
   hasSummary_=iConfig.exists("summedWeights");
   if(hasSummary_){
-    summedWeightsToken_=cc.consumes<float, edm::InLumi>(iConfig.getParameter<edm::InputTag>("summedWeights"));
+    summedWeightsToken_=consumes<float, edm::InLumi>(iConfig.getParameter<edm::InputTag>("summedWeights"));
   }
   getGenEventInfoProduct_ = edm::GetterOfProducts<GenEventInfoProduct>(edm::ProcessMatch("*"), this);
 

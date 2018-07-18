@@ -305,7 +305,7 @@ from FinalStateAnalysis.PatTools.patFinalStateProducers \
 fs_daughter_inputs = {
     'electrons': 'slimmedElectrons',
     'muons': 'slimmedMuons',
-    'taus': 'slimmedTausMuonCleaned',
+    'taus': 'slimmedTaus',
     'photons': 'slimmedPhotons',
     'jets': 'slimmedJets',
     'pfmet': 'slimmedMETs',         # slimmedMETs, slimmedMETsNoHF (miniaodv2), slimmmedMETsPuppi (not correct in miniaodv1)
@@ -677,7 +677,7 @@ if options.runMVAMET:
     recorrectJets(process, isData)
     
     runMVAMET( process, jetCollectionPF = mvametJetCollection )
-    process.MVAMET.srcLeptons  = cms.VInputTag("slimmedMuons", "slimmedElectrons", "slimmedTausMuonCleaned")
+    process.MVAMET.srcLeptons  = cms.VInputTag("slimmedMuons", "slimmedElectrons", "slimmedTaus")
     process.MVAMET.requireOS = cms.bool(False)
     process.MVAMETSequence = cms.Path(process.MVAMET)
 
