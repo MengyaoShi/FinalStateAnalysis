@@ -6,6 +6,7 @@
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "FWCore/Framework/interface/one/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/LuminosityBlock.h"
@@ -22,7 +23,7 @@
 class WeightedEventCountProducer : public edm::one::EDProducer<edm::one::WatchLuminosityBlocks,
                                                        edm::EndLuminosityBlockProducer> {
 public:
-  explicit WeightedEventCountProducer(const edm::ParameterSet&);
+  explicit WeightedEventCountProducer(const edm::ParameterSet&, edm::ConsumesCollector&&);
   ~WeightedEventCountProducer();
 
 private:
@@ -32,7 +33,8 @@ private:
   virtual void endLuminosityBlockProduce(edm::LuminosityBlock &, const edm::EventSetup&) override;
       
   // ----------member data ---------------------------
-
+  edm::EDGetTokenT<float> summedWeightsToken_;
+  bool hasSummary_;
   double summedWeightsInLumi_;
 
   edm::GetterOfProducts<GenEventInfoProduct> getGenEventInfoProduct_;
@@ -45,8 +47,12 @@ using namespace std;
 
 
 
-WeightedEventCountProducer::WeightedEventCountProducer(const edm::ParameterSet& iConfig){
+WeightedEventCountProducer::WeightedEventCountProducer(const edm::ParameterSet& iConfig, edm::ConsumesCollector&& cc){
   produces<edm::MergeableCounter, edm::InLumi>();
+  hasSummary_=iConfig.exists("summedWeights");
+  if(hasSummary_){
+    summedWeightsToken_=cc.consumes<float, edm::InLumi>(iConfig.getParameter<edm::InputTag>("summedWeights"));
+  }
   getGenEventInfoProduct_ = edm::GetterOfProducts<GenEventInfoProduct>(edm::ProcessMatch("*"), this);
 
   callWhenNewProductsRegistered([this](edm::BranchDescription const& bd){
@@ -60,6 +66,7 @@ WeightedEventCountProducer::~WeightedEventCountProducer(){}
 
 void
 WeightedEventCountProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
+  if (hasSummary_) return;
 
   std::vector<edm::Handle<GenEventInfoProduct> > genEventInfoH;
   getGenEventInfoProduct_.fillHandles(iEvent, genEventInfoH);
@@ -79,8 +86,17 @@ WeightedEventCountProducer::produce(edm::Event& iEvent, const edm::EventSetup& i
 
 void 
 WeightedEventCountProducer::beginLuminosityBlock(const LuminosityBlock & theLuminosityBlock, const EventSetup & theSetup) {
-  summedWeightsInLumi_ = 0.;
-  return;
+  if (hasSummary_) {
+    edm::Handle<float> summedWeightsHandle;
+    theLuminosityBlock.getByToken(summedWeightsToken_, summedWeightsHandle);
+
+    hasSummary_= summedWeightsHandle.isValid();
+    summedWeightsInLumi_ =hasSummary_? *summedWeightsHandle :0;
+  }
+  else {
+    summedWeightsInLumi_ = 0.;
+    return;
+  }
 }
 
 void 

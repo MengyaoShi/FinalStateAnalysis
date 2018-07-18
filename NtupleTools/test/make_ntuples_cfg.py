@@ -62,13 +62,13 @@ keepPat=0      - Instead of making flat ntuples, write high level
 import FWCore.ParameterSet.Config as cms
 import os
 import copy
+import FWCore.Utilities.FileUtils as FileUtils
 from FinalStateAnalysis.NtupleTools.hzg_sync_mod import set_passthru
 from FinalStateAnalysis.NtupleTools.ntuple_builder import \
     make_ntuple, add_ntuple
 from FinalStateAnalysis.Utilities.version import cmssw_major_version, \
     cmssw_minor_version
 import PhysicsTools.PatAlgos.tools.helpers as helpers
-
 process = cms.Process("Ntuples")
 cmsswversion=os.environ['CMSSW_VERSION']
 
@@ -116,7 +116,7 @@ options = TauVarParsing.TauVarParsing(
     dblhMode=False, # For double-charged Higgs analysis
     runTauSpinner=0,
     GlobalTag="",
-    runMetFilter=0, #1 for data
+    runMetFilter=0, #1 for data, 0 for MC
     runDQM=0,
     hzz=0,
     zh=0,

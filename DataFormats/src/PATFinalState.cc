@@ -493,6 +493,7 @@ PATFinalState::tauGenMatch2( size_t i ) const {
         double closestDR_HTau = 999;
         double closestDR_ETau = 999;
         double closestDR_MTau = 999;
+        //std::cout<<"genHTaus.size()="<< genHTaus.size()<<"; genETaus.size()="<< genETaus.size()<<"; genMTaus.size()="<< genMTaus.size()<<std::endl;
         if ( genHTaus.size() > 0 ) {
             for (size_t j = 0; j != genHTaus.size(); ++j) {
                 double tmpDR = reco::deltaR( daughter(i)->p4(), genHTaus[j].p4() );
@@ -523,6 +524,8 @@ PATFinalState::tauGenMatch2( size_t i ) const {
         }
         // Other codes based off of not matching previous 2 options
         // as closest gen particle, retruns based on closest rebuilt gen tau
+        //
+        //std::cout<<"ClosestDR_eTau="<< closestDR_ETau<< "; closestDR_MTau="<<closestDR_MTau<<"closestDR_HTau="<<closestDR_HTau<<std::endl;  
         if (closestDR_ETau < 0.2 && closestDR_ETau < TMath::Min(closestDR_MTau, closestDR_HTau)) return 3.0;
         if (closestDR_MTau < 0.2 && closestDR_MTau < TMath::Min(closestDR_ETau, closestDR_HTau)) return 4.0;
         if (closestDR_HTau < 0.2 && closestDR_HTau < TMath::Min(closestDR_ETau, closestDR_MTau)) return 5.0;
@@ -789,7 +792,7 @@ PATFinalState::channelSpecificObjCuts( const std::string& channel ) const {
   double pt1=daughter(1)->pt();
   if (channel == "TauTau"   && pt0 > 33 && pt1 > 33) return 1.;
   if (channel == "ElecTau"  && pt0 > 23 && pt1 > 19) return 1.;
-  if (channel == "MuTau"    && pt0 > 19 && pt1 > 19) return 1.;
+  if (channel == "MuTau"    && pt0 > 19 && pt1 > 10) return 1.;
   if (channel == "EMu"    && pt0 + pt1 > 30) return 1.;
 
   // If channel isn't specificed above, return 1.
