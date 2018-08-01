@@ -50,6 +50,7 @@ using namespace std;
 WeightedEventCountProducer::WeightedEventCountProducer(const edm::ParameterSet& iConfig){
   produces<edm::MergeableCounter, edm::InLumi>();
   hasSummary_=iConfig.exists("summedWeights");
+  std::cout<<"hasSummary_="<<hasSummary_<<std::endl;
   if(hasSummary_){
     summedWeightsToken_=consumes<float, edm::InLumi>(iConfig.getParameter<edm::InputTag>("summedWeights"));
   }
@@ -92,9 +93,11 @@ WeightedEventCountProducer::beginLuminosityBlock(const LuminosityBlock & theLumi
 
     hasSummary_= summedWeightsHandle.isValid();
     summedWeightsInLumi_ =hasSummary_? *summedWeightsHandle :0;
+    std::cout<<"hasSummary_ equals to true, and summedWeightsInLumi_="<<summedWeightsInLumi_<<std::endl;
   }
   else {
     summedWeightsInLumi_ = 0.;
+    std::cout<<"hasSummary_ equals to false, and summedWeightsInLumi_="<<summedWeightsInLumi_<<std::endl;
     return;
   }
 }
